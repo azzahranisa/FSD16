@@ -1,0 +1,68 @@
+---
+title: "K-MEANS"
+author: "AZZAHRA NISA LUTFIA 19523028"
+date: "11/19/2020"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(cluster)
+library(factoextra)
+```
+
+
+```{r}
+library(readr)
+wholesale <- read_csv("Wholesale customers data.csv")
+view(wholesale)
+summary(wholesale)
+```
+
+```{r}
+wholesale.new <- wholesale[, 2:5]
+wholesale.class <- wholesale[, "Channel"]
+set.seed(1432)
+result <- kmeans(wholesale.new, 3)
+```
+
+```{r}
+par(mfrow=c(2,2),mar=c(5,4,2,2))
+plot(wholesale.new[, c(1,2)], col=result$cluster)
+plot(wholesale.new[, c(1,2)], col=wholesale.class)
+plot(wholesale.new[, c(3,4)], col=result$cluster)
+plot(wholesale.new[, c(3,4)], col=wholesale.class)
+
+```
+
+```{r}
+result$tot.withinss
+```
+
+```{r}
+attributes(result)$names
+```
+
+```{r}
+wholesale.new$cluster <- factor(result$cluster)
+centers <- as.data.frame(result$centers)
+library(ggplot2)
+ggplot() + 
+  geom_point(data=wholesale.new, aes(x=Fresh, y=Grocery,color=cluster))  +
+  geom_point(data=centers, aes(x=Fresh, y=Grocery, color="Center"), 
+             size=52, alpha=.3, show.legend = FALSE)
+```
+
+```{r}
+set.seed (2)
+x <- matrix (rnorm (50*2) , ncol =2)
+x[1:25 ,1] <- x[1:25 ,1] + 3
+x[1:25 ,2]<- x[1:25 ,2] - 4
+plot(x)
+```
+
+```{r}
+km.out <- kmeans(x, 2)
+plot(x, col = (km.out$cluster +1))
+
+```
+
